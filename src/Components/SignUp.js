@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { validate } from "./validate";
 
 const SignUp = () => {
   const [data, setData] = useState({
@@ -8,6 +9,13 @@ const SignUp = () => {
     confirmPassword: "",
     isAccepted: false,
   });
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    setErrors(validate(data));
+    console.log(errors);
+  }, [data]);
+
   const changeHandler = (event) => {
     if (event.target.name === "isAccepted") {
       setData({ ...data, [event.target.name]: event.target.checked });
@@ -16,6 +24,7 @@ const SignUp = () => {
     }
     console.log(data);
   };
+
   return (
     <div>
       <form>
