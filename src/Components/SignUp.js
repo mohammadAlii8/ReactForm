@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { validate } from "./validate";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notify } from "./toast";
 
 const SignUp = () => {
   const [data, setData] = useState({
@@ -10,11 +13,32 @@ const SignUp = () => {
     isAccepted: false,
   });
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   useEffect(() => {
     setErrors(validate(data));
-    console.log(errors);
-  }, [data]);
+  }, [data, touched]);
+
+  const focusHandler = (e) => {
+    setTouched({ ...touched, [e.target.name]: true });
+  };
+
+  const submitHandler = (e) => {
+    notify();
+    e.preventDefault();
+    if (!Object.keys(errors).length) {
+      notify("You signed in succecfully", "success");
+    } else {
+      notify("Invalid Data", "error");
+      setTouched({
+        name: true,
+        email: true,
+        Password: true,
+        confirmPassword: true,
+        isAccepted: true,
+      });
+    }
+  };
 
   const changeHandler = (event) => {
     if (event.target.name === "isAccepted") {
@@ -22,12 +46,11 @@ const SignUp = () => {
     } else {
       setData({ ...data, [event.target.name]: event.target.value });
     }
-    console.log(data);
   };
 
   return (
     <div>
-      <form>
+      <form onSubmit={submitHandler}>
         <h2>SignUp</h2>
         <div>
           <label>Name</label>
@@ -36,7 +59,9 @@ const SignUp = () => {
             name="name"
             value={data.name}
             onChange={changeHandler}
+            onFocus={focusHandler}
           />
+          {errors.name && touched.name && <span>{errors.name}</span>}
         </div>
         <div>
           <label>Email</label>
@@ -45,7 +70,9 @@ const SignUp = () => {
             name="email"
             value={data.email}
             onChange={changeHandler}
+            onFocus={focusHandler}
           />
+          {errors.email && touched.email && <span>{errors.email}</span>}
         </div>
         <div>
           <label>Password</label>
@@ -54,7 +81,11 @@ const SignUp = () => {
             name="Password"
             value={data.Password}
             onChange={changeHandler}
+            onFocus={focusHandler}
           />
+          {errors.Password && touched.Password && (
+            <span>{errors.Password}</span>
+          )}
         </div>
         <div>
           <label>confirmPassword</label>
@@ -63,7 +94,11 @@ const SignUp = () => {
             name="confirmPassword"
             value={data.confirmPassword}
             onChange={changeHandler}
+            onFocus={focusHandler}
           />
+          {errors.confirmPassword && touched.confirmPassword && (
+            <span>{errors.confirmPassword}</span>
+          )}
         </div>
         <div>
           <label>I accepted of privacy policy</label>
@@ -72,13 +107,18 @@ const SignUp = () => {
             name="isAccepted"
             value={data.isAccepted}
             onChange={changeHandler}
+            onFocus={focusHandler}
           />
+          {errors.isAccepted && touched.isAccepted && (
+            <span>{errors.isAccepted}</span>
+          )}
         </div>
         <div>
-          <a href="#">login</a>
+          <button>login</button>
           <button type="submit">SignUp</button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };
