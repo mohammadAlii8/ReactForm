@@ -159,7 +159,7 @@ input[type="checkbox"]:focus {
     width: 90%;
   }
 
-  .uncompleted {
+  .uncompleted { 
     width: 90%;
   }
 }
